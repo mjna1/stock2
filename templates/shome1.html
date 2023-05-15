@@ -22,36 +22,36 @@
 </head>
 <body>
 <button onclick="getDatas()">بروزرسانی</button>
-<a id="tse">"TSETMC"</a>
+<a id="tse">"OPTION:"</a>
 
 <a id="sortid">Last Click =</a>
-<div>
-    <select id="filter-field">
-        <option></option>
-        <option value="name">Name</option>
-        <option value="powerlast">powerlast</option>
-        <option value="powerreal">powerreal</option>
-        <option value="coeflast">coeflast</option>
-        <option value="volumelast">volumelast</option>
-        <option value="nesbatvol">nesbatvol</option>
-        <option value="timelast">timelast</option>
-        <option value="id">id</option>
-    </select>
-
-    <select id="filter-type">
-        <option value="=">=</option>
-        <option value="<"><</option>
-        <option value="<="><=</option>
-        <option value=">">></option>
-        <option value=">=">>=</option>
-        <option value="!=">!=</option>
-        <option value="like">like</option>
-    </select>
-
-    <input id="filter-value" type="text" placeholder="value to filter">
-
-    <button id="filter-clear">Clear Filter</button>
-</div>
+{#<div>#}
+{#    <select id="filter-field">#}
+{#        <option></option>#}
+{#        <option value="name">Name</option>#}
+{#        <option value="powerlast">powerlast</option>#}
+{#        <option value="powerreal">powerreal</option>#}
+{#        <option value="coeflast">coeflast</option>#}
+{#        <option value="volumelast">volumelast</option>#}
+{#        <option value="nesbatvol">nesbatvol</option>#}
+{#        <option value="timelast">timelast</option>#}
+{#        <option value="id">id</option>#}
+{#    </select>#}
+{##}
+{#    <select id="filter-type">#}
+{#        <option value="=">=</option>#}
+{#        <option value="<"><</option>#}
+{#        <option value="<="><=</option>#}
+{#        <option value=">">></option>#}
+{#        <option value=">=">>=</option>#}
+{#        <option value="!=">!=</option>#}
+{#        <option value="like">like</option>#}
+{#    </select>#}
+{##}
+{#    <input id="filter-value" type="text" placeholder="value to filter">#}
+{##}
+{#    <button id="filter-clear">Clear Filter</button>#}
+{#</div>#}
 
 <div id="example-table"></div>
 
@@ -182,44 +182,44 @@
 
             ///////////////////////////////////////////////
             //Define variables for input elements
-            var fieldEl = document.getElementById("filter-field");
-            var typeEl = document.getElementById("filter-type");
-            var valueEl = document.getElementById("filter-value");
-
-
-            //Trigger setFilter function with correct parameters
-            function updateFilter() {
-                var filterVal = fieldEl.options[fieldEl.selectedIndex].value;
-                var typeVal = typeEl.options[typeEl.selectedIndex].value;
-
-                var filter = filterVal == "function" ? customFilter : filterVal;
-
-                if (filterVal == "function") {
-                    typeEl.disabled = true;
-                    valueEl.disabled = true;
-                } else {
-                    typeEl.disabled = false;
-                    valueEl.disabled = false;
-                }
-
-                if (filterVal) {
-                    table.setFilter(filter, typeVal, valueEl.value);
-                }
-            }
-
+            {#var fieldEl = document.getElementById("filter-field");#}
+            {#var typeEl = document.getElementById("filter-type");#}
+            {#var valueEl = document.getElementById("filter-value");#}
+            {##}
+            {##}
+            {#//Trigger setFilter function with correct parameters#}
+            {#function updateFilter() {#}
+            {#    var filterVal = fieldEl.options[fieldEl.selectedIndex].value;#}
+            {#    var typeVal = typeEl.options[typeEl.selectedIndex].value;#}
+            {##}
+            {#    var filter = filterVal == "function" ? customFilter : filterVal;#}
+            {##}
+            {#    if (filterVal == "function") {#}
+            {#        typeEl.disabled = true;#}
+            {#        valueEl.disabled = true;#}
+            {#    } else {#}
+            {#        typeEl.disabled = false;#}
+            {#        valueEl.disabled = false;#}
+            {#    }#}
+            {##}
+            {#    if (filterVal) {#}
+            {#        table.setFilter(filter, typeVal, valueEl.value);#}
+            {#    }#}
+            {#}#}
+            {##}
             {#//Update filters on value change#}
-            document.getElementById("filter-field").addEventListener("change", updateFilter);
-            document.getElementById("filter-type").addEventListener("change", updateFilter);
-            document.getElementById("filter-value").addEventListener("keyup", updateFilter);
-
-            //Clear filters on "Clear Filters" button click
-            document.getElementById("filter-clear").addEventListener("click", function () {
-                fieldEl.value = "";
-                typeEl.value = "=";
-                valueEl.value = "";
-
-                table.clearFilter();
-            });
+            {#document.getElementById("filter-field").addEventListener("change", updateFilter);#}
+            {#document.getElementById("filter-type").addEventListener("change", updateFilter);#}
+            {#document.getElementById("filter-value").addEventListener("keyup", updateFilter);#}
+            {##}
+            {#//Clear filters on "Clear Filters" button click#}
+            {#document.getElementById("filter-clear").addEventListener("click", function () {#}
+            {#    fieldEl.value = "";#}
+            {#    typeEl.value = "=";#}
+            {#    valueEl.value = "";#}
+            {##}
+            {#    table.clearFilter();#}
+            {#});#}
 
 
             var lineFormatter = function (cell, formatterParams, onRendered) {
@@ -233,6 +233,17 @@
             };
 
 
+
+
+
+
+
+
+
+
+
+
+
             //create Tabulator on DOM element with id "example-table"
             var table = new Tabulator("#example-table", {
                 {#maxHeight: 20, // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)#}
@@ -244,33 +255,34 @@
                 {#progressiveRenderSize: 20, //sets the number of rows to render per block (default = 20)#}
                 {#progressiveRenderMargin: 350, //distance in px before end of scroll before progressive render is triggered (default = 200)#}
                 columns: [ //Define Table Columns
-                    {formatter: "rownum", hozAlign: "center", width: 40},
-                    {title: "id", field: "id", width: 40},
-                    {title: "نماد", field: "symbol", align: "center"},
+                    {formatter: "rownum", hozAlign: "center", width: 40,headerFilter:"input"},
+                    {title: "id", field: "id", width: 40,headerFilter:"input"},
+                    {title: "نماد", field: "symbol", align: "center",headerFilter:"input"},
                     {
                         title: "اسم",
                         field: "name",
 
-                        align: "center",
+                        align: "center",headerFilter:"input"
 
                     }, {
                         title: "قیمت پایانی اختیار",
                         field: "close_price",
-                        align: "center",
+                        align: "center",headerFilter:"input"
 
 
                     },
-                    {title: "قیمت پایانی سهم اصلی", field: "orginal_close", align: "center"},
-                    {title: "اختلاف قیمت", field: "margin", align: "center"},
-                    {title: "درصد اختلاف قیمت", field: "margin_percent", align: "center"},
+                    {title: "قیمت پایانی سهم اصلی", field: "orginal_close", align: "center",headerFilter:"input"},
+                    {title: "اختلاف قیمت", field: "margin", align: "center",headerFilter:"input"},
+                    {title: "درصد اختلاف قیمت", field: "margin_percent", align: "center",headerFilter:"input"},
 
-                    {title: "time", field: "time", align: "center"},
+                    {title: "time", field: "time", align: "center",headerFilter:"input"},
                     {
                         title: "watchlist",
                         field: "check",
                         hozAlign: "center",
                         editor: true,
                         formatter: "tickCross",
+                        headerFilter:"tickCross",  headerFilterParams:{"tristate":true},headerFilterEmptyCheck:function(value){return value === null},
                         sorter:"boolean",
                         cellEdited: function ( cell) {
                             console.log(cell.getValue());
