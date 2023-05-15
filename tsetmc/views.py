@@ -784,9 +784,9 @@ def sapi(request):
 			options.loc[options['name1'] == i, 'orginal_close'] = adj_close
 		options
 
-		options["close_price"] = options["close_price"].apply(convert_numb)
-		options["margin"] = options["orginal_close"] - options["close_price"]
-		options["margin_percent"] = options["margin"] / options["close_price"]
+		options["last_price"] = options["last_price"].apply(convert_numb)
+		options["margin"] = options["orginal_close"] - options["last_price"]
+		options["margin_percent"] = options["margin"] / options["last_price"]
 		# only show 4 digit
 		options["margin_percent"] = options["margin_percent"].apply(lambda x: round(x, 4))
 
@@ -795,7 +795,7 @@ def sapi(request):
 		# options convert to dict
 		options.reset_index(inplace=True, drop=True)
 		options.reset_index(inplace=True)
-		options = options[["id", "symbol", "name", "close_price", "margin", "margin_percent", "orginal_close"]]
+		options = options[["id", "symbol", "name", "last_price", "margin", "margin_percent", "orginal_close"]]
 		options
 		# add new column to options that is time
 		options["time"] = datetime.datetime.now().strftime("%H:%M:%S")

@@ -265,13 +265,13 @@
                         align: "center",headerFilter:"input"
 
                     }, {
-                        title: "قیمت پایانی اختیار",
-                        field: "close_price",
+                        title: "قیمت معامله اختیار",
+                        field: "last_price",
                         align: "center",headerFilter:"input"
 
 
                     },
-                    {title: "قیمت پایانی سهم اصلی", field: "orginal_close", align: "center",headerFilter:"input"},
+                    {title: "قیمت معامله سهم اصلی", field: "orginal_close", align: "center",headerFilter:"input"},
                     {title: "اختلاف قیمت", field: "margin", align: "center",headerFilter:"input"},
                     {title: "درصد اختلاف قیمت", field: "margin_percent", align: "center",headerFilter:"input"},
 
@@ -282,8 +282,7 @@
                         hozAlign: "center",
                         editor: true,
                         formatter: "tickCross",
-                        headerFilter:"tickCross",  headerFilterParams:{"tristate":true},headerFilterEmptyCheck:function(value){return value === null},
-                        sorter:"boolean",
+                        headerFilter:"input",
                         cellEdited: function ( cell) {
                             console.log(cell.getValue());
                             {#console.log(cell.getRow().getData());#}
