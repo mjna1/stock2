@@ -626,9 +626,7 @@ def shome1(request):
 def surl(request, stock):
 	print(stock)
 	try:
-		import pytse_client as tse
-		ticker = tse.Ticker("", index=stock)
-		url = ticker.url
+		url="http://www.tsetmc.com/Loader.aspx?ParTree=151311&i="+stock
 		return redirect(url)
 	except Exception as e:
 		return HttpResponse(e)
