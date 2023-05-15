@@ -713,7 +713,7 @@ def sapi(request):
 		dfdf = data
 		print(dfdf.shape)
 		stockk = dfdf[dfdf["دسته بندی"] == "300"]
-		option = dfdf[dfdf["دسته بندی"] == "311"]
+		option = dfdf[dfdf["دسته بندی"].isin(["311", "320"])]
 		print(option.shape)
 		options = option[
 			["id", "نماد", "نام", "پایانی مقدار", "آخرین مقدار", "تعداد", "حجم", "ارزش", "کمترین", "بیشترین", "دیروز",
