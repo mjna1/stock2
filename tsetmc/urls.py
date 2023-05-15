@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import url, api, api2, home1 ,surl, sapi,shome1
+from .views import url, api, api2, home1 ,surl, sapi,shome1,surl2
 
 urlpatterns = [
     path("url/<str:stock>", url, name='url'),
@@ -8,7 +8,9 @@ urlpatterns = [
     path("", home1, name='home1'),
     
     path("surl/<str:stock>", surl, name='surl'),
-    path("sapi", sapi, name='sapi'),
+	path("surl2/<str:stock>/<str:is_saham>", surl2, name='surl2'),
+
+	path("sapi", sapi, name='sapi'),
     path("s", shome1, name='shome1'),
 
 ]

@@ -634,7 +634,32 @@ def surl(request, stock):
 		return HttpResponse(e)
 
 
+@csrf_exempt
+def surl2(request, stock, is_saham):
+	print(stock,is_saham)
+	# read json from file if is not exist create it
+	try:
+		with open('saham.json', 'r') as f:
+			data = json.load(f)
+		# add new data to json
+		data[stock] = is_saham
+		# write json to file
+		with open('saham.json', 'w') as f:
+			json.dump(data, f)
 
+
+	except:
+
+		data = {}
+		# add new data to json
+		data[stock] = is_saham
+		# write json to file
+		with open('saham.json', 'w') as f:
+			json.dump(data, f)
+
+
+
+	return HttpResponse(stock+"-"+is_saham)
 
 
 @csrf_exempt
@@ -754,7 +779,7 @@ def sapi(request):
 
 		for i in optionsNAME:
 			try:
-				adj_close = int(dfdf[dfdf["نماد"] == i]["پایانی مقدار"].values[0])
+				adj_close = int(dfdf[dfdf["نماد"] == i]["آخرین مقدار"].values[0])
 			except:
 				adj_close = 0
 			# print(i, adj_close)
@@ -776,7 +801,14 @@ def sapi(request):
 		options
 		# add new column to options that is time
 		options["time"] = datetime.datetime.now().strftime("%H:%M:%S")
-		options["check"] = True
+		options["check"] = False
+		# read saham.json if id in key dict then put check in json
+		with open('saham.json') as json_file:
+			data = json.load(json_file)
+			for i in data.keys():
+				for j in options["id"]:
+					if i == j:
+						options.loc[options['id'] == j, 'check'] = data[i]
 
 		options_dict = options.to_dict(orient='records')
 		options_dict

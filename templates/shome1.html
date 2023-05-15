@@ -262,17 +262,31 @@
                     },
                     {title: "قیمت پایانی سهم اصلی", field: "orginal_close", align: "center"},
                     {title: "اختلاف قیمت", field: "margin", align: "center"},
-                    {title: "درصد اختلاف قیمت", field: "margin_percent", sorter: "string", align: "center"},
+                    {title: "درصد اختلاف قیمت", field: "margin_percent", align: "center"},
 
                     {title: "time", field: "time", align: "center"},
                     {
-                        title: "Example",
+                        title: "watchlist",
                         field: "check",
                         hozAlign: "center",
                         editor: true,
                         formatter: "tickCross",
-                        cellClick: function (e, cell) {
+                        sorter:"boolean",
+                        cellEdited: function ( cell) {
                             console.log(cell.getValue());
+                            {#console.log(cell.getRow().getData());#}
+                            console.log(cell.getRow().getIndex());
+                            {#console.log(cell.getRow().getPosition());#}
+
+                            var URL = "/surl2" +"/"+cell.getRow().getIndex() +"/"+cell.getValue();
+                            {#get a url async#}
+                            fetch(URL)
+                                .then(function (response) {
+                                    return response.text();
+                                })
+                                .then(function (myJson) {
+                                    console.log(myJson);
+                                });
                         }
                     },
                 ],
@@ -282,8 +296,8 @@
                     console.log(row.getIndex());
                     document.getElementById("sortid").innerHTML = "Last Click =  Position: " + (row.getPosition(true) + 1) + "   Namad:    " + row.getData().name;
                     document.getElementById("tse").href = "/surl/" + row.getData().name;
-                    alert("Row " + row.getData().id + " Clicked!!!!");
-                    ;
+                    {#alert("Row " + row.getData().id + " Clicked!!!!");#}
+                    {#;#}
 
                 },
                 rowDblClick: function (e, row) {
@@ -304,7 +318,7 @@
             console.log(e);
             {#interval = interval * 2;#}
         }
-        table.setSort("margin_percent", "desc");
+        table.setSort("check", "desc");
 
 
         var b = performance.now();
