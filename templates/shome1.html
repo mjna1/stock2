@@ -21,7 +21,7 @@
 
 </head>
 <body>
-<button onclick="getDatas()">Resfresh Data</button>
+<button onclick="getDatas()">بروزرسانی</button>
 <a id="tse">"TSETMC"</a>
 
 <a id="sortid">Last Click =</a>
@@ -311,7 +311,7 @@
         console.log('It took  ' + (b - a) + '  ms.');
         b = 0;
         a = 0;
-        setTimeout(getDatas, 6000);
+        setTimeout(getDatas, 60000);
     }
 
     getDatas();
