@@ -259,21 +259,27 @@
                     {title: "id", field: "id", width: 40,headerFilter:"input"},
                     {title: "نماد", field: "symbol", align: "center",headerFilter:"input"},
                     {
-                        title: "اسم",
+                        title: "توضیحات",
                         field: "name",
 
                         align: "center",headerFilter:"input"
 
                     }, {
-                        title: "قیمت معامله اختیار",
-                        field: "last_price",
+                        title: "call پیشنهاد خرید",
+                        field: "panel_close",
                         align: "center",headerFilter:"input"
 
 
                     },
-                    {title: "قیمت معامله سهم اصلی", field: "orginal_close", align: "center",headerFilter:"input"},
-                    {title: "اختلاف قیمت", field: "margin", align: "center",headerFilter:"input"},
-                    {title: "درصد اختلاف قیمت", field: "margin_percent", align: "center",headerFilter:"input"},
+                    {title: "قیمت خرید دارایی پایه", field: "panel_orginal_close", align: "center",headerFilter:"input"},
+                    {title: "قیمت تمام شده برای ما", field: "margin", align: "center",headerFilter:"input"},
+                    {title: "درصد سود در صورت اعمال اختیار", field: "margin_percent", align: "center",headerFilter:"input"},
+
+                    {title: "روز تا سررسید", field: "delta", align: "center",headerFilter:"input"},
+                    {title: "درصد سود ماهیانه معادل", field: "margin_percent_monthly", align: "center",headerFilter:"input"},
+                    {title: "پوشش ریسک در صورت کاهش قیمت", field: "hedging", align: "center",headerFilter:"input"},
+                    {title: "put نماد", field: "put", align: "center",headerFilter:"input"},
+                    {title: "put قیمت خرید", field: "put_price", align: "center",headerFilter:"input"},
 
                     {title: "time", field: "time", align: "center",headerFilter:"input"},
                     {

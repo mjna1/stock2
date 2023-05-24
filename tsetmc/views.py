@@ -709,12 +709,18 @@ def sapi(request):
 	#     print("file  created")
 
 	import requests
-
 	def Get_MarketWatch():
-		url = 'http://www.tsetmc.com/tsev2/data/MarketWatchInit.aspx?h=0&r=0'
+		import requests
+		import pandas as pd
+
+		# def Get_MarketWatch():
+		# url = 'http://www.tsetmc.com/tsev2/data/MarketWatchInit.aspx?h=0&r=0'
+		url = 'http://old.tsetmc.com/tsev2/data/MarketWatchInit.aspx?h=0&r=0'
+
 		r = requests.get(url)
 		r.encoding = 'utf-8'
 		data = r.text
+		# print(data)
 		data = data.replace('@', ';')
 		data = data.split(';')
 		data = [i.split(',') for i in data]
@@ -725,24 +731,32 @@ def sapi(request):
 		data = data.dropna()
 		try:
 			data.columns = ["id", "id2", "نماد", "نام", "4", "اولین", "پایانی مقدار", "آخرین مقدار", "تعداد", "حجم",
-							"ارزش", "کمترین", "بیشترین", "دیروز", "14", "حداقل قیمت مجاز", "16", "17", "18",
-							"حداکثر قیمت مجاز", "حجم مبنا", "تعداد سهام", "دسته بندی", "0", "00"]
+							"ارزش",
+							"کمترین", "بیشترین", "دیروز", "14", "حداقل قیمت مجاز", "16", "17", "18", "حداکثر قیمت مجاز",
+							"حجم مبنا", "تعداد سهام", "دسته بندی", "0", "00"]
 		except Exception as e:
 			print(e)
 			data.columns = ["id", "id2", "نماد", "نام", "4", "اولین", "پایانی مقدار", "آخرین مقدار", "تعداد", "حجم",
-							"ارزش", "کمترین", "بیشترین", "دیروز", "14", "حداقل قیمت مجاز", "16", "17", "18",
-							"حداکثر قیمت مجاز", "حجم مبنا", "تعداد سهام", "دسته بندی"]
+							"ارزش",
+							"کمترین", "بیشترین", "دیروز", "14", "حداقل قیمت مجاز", "16", "17", "18", "حداکثر قیمت مجاز",
+							"حجم مبنا", "تعداد سهام", "دسته بندی"]
+			pass
 
 		dfdf = data
+		dfdf.to_excel("dfdf.xlsx")
+		# display(dfdf)
 		print(dfdf.shape)
 		stockk = dfdf[dfdf["دسته بندی"] == "300"]
-		option = dfdf[dfdf["دسته بندی"].isin(["311", "320"])]
+		# option = dfdf[dfdf["دسته بندی"] == "311" or dfdf["دسته بندی"] == "320"]
+		option = dfdf[dfdf["دسته بندی"].isin(["311", "320", "312", "321", "0"])]
 		print(option.shape)
+
 		options = option[
 			["id", "نماد", "نام", "پایانی مقدار", "آخرین مقدار", "تعداد", "حجم", "ارزش", "کمترین", "بیشترین", "دیروز",
 			 "حداقل قیمت مجاز", "حداکثر قیمت مجاز"]]
 		options.columns = ["id", "symbol", "name", "close_price", "last_price", "count", "volume", "value", "min_price",
 						   "max_price", "yesterday", "min_price_allowed", "max_price_allowed"]
+
 		options[["name1", "name2", "name3"]] = options["name"].str.split("-", expand=True)
 		options["name1"] = options["name1"].str.replace("اختيارخ", "")
 		options["name1"] = options["name1"].str.replace("ص آگاه", "اگاه")
@@ -751,54 +765,203 @@ def sapi(request):
 		options["name1"] = options["name1"].str.strip()
 		options["name2"] = options["name2"].str.strip()
 		options["name3"] = options["name3"].str.strip()
-
+		optionsdf = options.copy()
 		options
 
 		optionsNAMEs = options.name1.unique()
 		optionsNAME = optionsNAMEs.tolist()
-		optionsNAME
-		optionsNAMEs
-		# import tse clinet
-		# from farsi_tools import standardize_persian_text
-		# import pytse_client as tse
-		# for i in optionsNAME:
-		#     namad=i
-		#
-		#     namad=standardize_persian_text(namad)
-		#     try:
-		#         ticker = tse.Ticker(symbol=namad, adjust=True)
-		#         adj_close=ticker.adj_close
-		#     except:
-		#         adj_close=0
-		#     print(i,adj_close)
-		#     # where in optionsNAMEs == i then add adj_close
-		#     options.loc[options['name1'] == i, 'orginal_close'] = adj_close
-		# options
+		optionsids = options.id.unique()
+		optionsid = optionsids.tolist()
+
+		# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+		from persiantools.jdatetime import JalaliDate
+		from datetime import datetime
+
+		def jal_to_jor(datesting):
+			try:
+				datesting = str(datesting)
+				datesting = datesting.split("/")
+				# print(datesting)
+				rowyear = str(datesting[0])
+				if len(str(rowyear)) > 3:
+					rowyear = rowyear[-2:]
+				# print(rowyear)
+				if int(rowyear) > 50:
+					year = int(f"13{rowyear}")
+				else:
+					year = int(f"14{rowyear}")
+				# print(year)
+				jordate = JalaliDate(year, int(datesting[1]), int(datesting[2])).to_gregorian()
+				d0 = datetime.combine(jordate, datetime.min.time())
+				delta = d0 - datetime.now()
+				delta = delta.days
+				return delta
+			except Exception as e:
+				# print(e)
+				datesting = str(datesting)
+				# extract betwin '
+				datesting = datesting.split("'")[1]
+				# split datesting 4 2 2 character
+				datesting = [datesting[i:i + 2] for i in range(2, len(datesting), 2)]
+				# print(datesting)
+				rowyear = str(datesting[0])
+				if len(str(rowyear)) > 3:
+					rowyear = rowyear[-2:]
+				# print(rowyear)
+				if int(rowyear) > 50:
+					year = int(f"13{rowyear}")
+				else:
+					year = int(f"14{rowyear}")
+				# print(year)
+				jordate = JalaliDate(year, int(datesting[1]), int(datesting[2])).to_gregorian()
+				d0 = datetime.combine(jordate, datetime.min.time())
+				delta = d0 - datetime.now()
+				delta = delta.days
+				return delta
+
+		# jal_to_jor("1402/03/01")
+
+		options["delta"] = options["name3"].apply(jal_to_jor)
+
+		import requests
+		import pandas as pd
+		# url = 'http://www.tsetmc.com/tsev2/data/MarketWatchPlus.aspx?r=11833940375'
+		url = 'http://old.tsetmc.com/tsev2/data/MarketWatchPlus.aspx?r=11833940375'
+
+		r = requests.get(url)
+		# r.encoding = 'utf-8'
+		data = r.text
+		# print(data)
+		data = data.split('@', 1)[-1]
+		data = data.replace('@', ';')
+		data = data.split(';')
+		data = [i.split(',') for i in data]
+		data = pd.DataFrame(data)
+		data = data.drop(data.index[0])
+		data = data.dropna(axis=1, how='all')
+		data = data.dropna(axis=0, how='all')
+		data = data.sort_values(by=0)
+		data.rename(columns={1: 'rowindex',
+							 2: 'supnum',
+							 3: 'demnum',
+							 4: 'demprice',
+							 5: 'supprice',
+							 6: 'demvol',
+							 7: 'supvol'
+							 }, inplace=True)
+
+		def id2price(id, index, verbose=False):
+
+			spec = data[data[0] == f"{id}"]
+			indexpanel = f"{index}"
+			demprice = spec[spec["rowindex"] == indexpanel]["demprice"].values[0]
+			supprice = spec[spec["rowindex"] == indexpanel]["supprice"].values[0]
+			demvol = spec[spec["rowindex"] == indexpanel]["demvol"].values[0]
+			supvol = spec[spec["rowindex"] == indexpanel]["supvol"].values[0]
+
+			down = spec[spec[8].notnull()]
+			fisrt = down["supnum"].values[0]
+			close = down["supnum"].values[0]
+			second = down["demprice"].values[0]
+			totalnumber = down["supprice"].values[0]
+			totalvolume = down["demvol"].values[0]
+			totalvalue = down["supvol"].values[0]
+			if verbose == True:
+				print(demprice, supprice, demvol, supvol, fisrt, close, second, totalnumber, totalvolume, totalvalue)
+			return demprice, supprice, demvol, supvol, fisrt, close, second, totalnumber, totalvolume, totalvalue
 
 		for i in optionsNAME:
 			try:
+				id_namad = int(dfdf[dfdf["نماد"] == i]["id"].values[0])
 				adj_close = int(dfdf[dfdf["نماد"] == i]["آخرین مقدار"].values[0])
+				# print(i, id_namad)
+				demprice, supprice, demvol, supvol, fisrt, close, second, totalnumber, totalvolume, totalvalue = id2price(
+					id_namad, 1)
+				options.loc[options['name1'] == i, 'orginal_close'] = adj_close
+				options.loc[options['name1'] == i, 'panel_orginal_close'] = demprice
 			except:
 				adj_close = 0
-			# print(i, adj_close)
-			options.loc[options['name1'] == i, 'orginal_close'] = adj_close
-		options
+				options.loc[options['name1'] == i, 'orginal_close'] = 0
+				options.loc[options['name1'] == i, 'panel_orginal_close'] = 0
 
+		for idd in optionsid:
+			try:
+				namad = dfdf[dfdf["id"] == idd]["نماد"].values[0]
+				# print("ss", idd, namad)
+				demprice, supprice, demvol, supvol, fisrt, close, second, totalnumber, totalvolume, totalvalue = id2price(
+					idd, 1, verbose=True)
+				options.loc[options['id'] == idd, 'panel_close'] = demprice
+			except Exception as e:
+				print(e)
+				options.loc[options['id'] == idd, 'panel_close'] = 0
+
+		# display(options)
+
+		options["panel_close"] = options["panel_close"].apply(convert_numb)
+		options["panel_orginal_close"] = options["panel_orginal_close"].apply(convert_numb)
+		options["orginal_close"] = options["orginal_close"].apply(convert_numb)
 		options["last_price"] = options["last_price"].apply(convert_numb)
-		options["margin"] = options["orginal_close"] - options["last_price"]
-		options["margin_percent"] = options["margin"] / options["last_price"]
-		# only show 4 digit
-		options["margin_percent"] = options["margin_percent"].apply(lambda x: round(x, 4))
+		options["name2"] = options["name2"].apply(convert_numb)
 
-		options
+		options["margin"] = options["panel_orginal_close"] - options["panel_close"]
+		options["margin_percent"] = (options["name2"] - options["margin"]) / options["name2"] * 100
+		options["margin_percent"] = options["margin_percent"].apply(lambda x: round(x, 2))
+		options["margin_percent_monthly"] = (options["margin_percent"] / options["delta"]) * 30
+		options["margin_percent_monthly"] = options["margin_percent_monthly"].apply(lambda x: round(x, 2))
+		print(options["margin_percent_monthly"])
+		# remove "" from margin_percent_monthly
+		options["margin_percent_monthly"] = options["margin_percent_monthly"].apply(lambda x: str(x).replace("nan", ""))
 
+
+
+		options["hedging"] = ((options["margin"] - options["name2"]) / options["name2"]) * 100
+		options["hedging"] = options["hedging"].apply(lambda x: round(x, 2))
+		def put_symbol(text):
+			text = str(text)
+			text = text.replace(text[0], "ط")
+			return text
+
+		options["put"] = options["symbol"].apply(put_symbol)
+
+		# try:
+
+		#     # options["put_price"] = options[options["symbol"] == options["put"]]["panel_close"]
+		#     for i in options:
+		#         print(i)
+		#         if i["put"] in options["symbol"]:
+		#             options["put_price"] = i["panel_close"]
+
+		# except Exception as e:
+		#     print(e)
+		#     pass
+
+		from persiantools import characters
+
+		symblist = options["symbol"].to_list()
+		symblist = list(map(characters.ar_to_fa, symblist))
+		options["put_price"] = 0
+		for i in range(len(options)):
+			symb1 = characters.ar_to_fa(options["put"].iloc[i])
+			if symb1 in symblist:
+				options["put_price"].iloc[i] = options["panel_close"].iloc[i]
+				# print(i)
+
+		# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 		# options convert to dict
 		options.reset_index(inplace=True, drop=True)
 		options.reset_index(inplace=True)
-		options = options[["id", "symbol", "name", "last_price", "margin", "margin_percent", "orginal_close"]]
-		options
-		# add new column to options that is time
-		options["time"] = datetime.datetime.now().strftime("%H:%M:%S")
+		# options = options[
+		# 	["index", "symbol", "name", "panel_close", "panel_orginal_close", "margin", "margin_percent", "delta",
+		# 	 "margin_percent_monthly", "hedging", "put", "put_price"]]
+
+		options = options[
+			["id", "symbol", "name","panel_close", "panel_orginal_close", "margin", "margin_percent", "delta","margin_percent_monthly",
+			  "hedging", "put", "put_price"]]
+		# options["time"] = datetime.now().strftime("%H:%M:%S")
+		options = options.sort_values(by="put_price", ascending=False)
+
+		options["time"] = datetime.now().strftime("%H:%M:%S")
 		options["check"] = False
 		# read saham.json if id in key dict then put check in json
 		with open('saham.json') as json_file:
@@ -809,7 +972,14 @@ def sapi(request):
 						options.loc[options['id'] == j, 'check'] = data[i]
 
 		options_dict = options.to_dict(orient='records')
-		options_dict
+		# return options_dict
+
+		# options_dict
+		# sort by delta
+		# Get_MarketWatch()
+
+		# options.head(50)
+		# print(options)
 		return options_dict
 
 	datadict = Get_MarketWatch()
